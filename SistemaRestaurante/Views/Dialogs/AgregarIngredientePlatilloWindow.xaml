@@ -1,0 +1,157 @@
+﻿<Window x:Class="SistemaRestaurante.Views.Dialogs.AgregarIngredientePlatilloWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SistemaRestaurante.Views.Dialogs"
+        xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        Title="AgregarIngredientePlatilloWindow" Height="800" Width="600"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+    <Window.Resources>
+        <Style x:Key="HoverButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+Background="{TemplateBinding Background}"
+CornerRadius="5"
+SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+    Property="Background"
+    Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border"
+    Property="Background"
+    Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border"
+    Property="Opacity"
+    Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HoverTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="3"
+                        SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                          Padding="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+        Property="BorderBrush"
+        Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="border"
+    Property="BorderBrush"
+    Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border"
+    Property="Opacity"
+    Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Border Background="White" Margin="20" CornerRadius="20" Padding="30" Width="400" Height="600">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5" />
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="Ingredientes" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Selecciona los ingredientes para el platillo" FontSize="14" Foreground="Gray" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" VerticalAlignment="Top" >
+                <TextBlock Text="Ingredientes" FontWeight="SemiBold" Margin="0 0 90 0" VerticalAlignment="Center" />
+                <DataGrid Style="{DynamicResource DataGridStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" x:Name="dgProductos" ItemsSource="{Binding Productos}">
+                    <DataGrid.Columns>
+
+                        <DataGridCheckBoxColumn Header="C" CanUserResize="False" Width="auto" ElementStyle="{StaticResource CheckBoxStyle1}" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <DataGridCheckBoxColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <CheckBox Style="{StaticResource CheckBoxStyle1}" IsChecked="{Binding DataContext.AreAllSelected, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                                </DataTemplate>
+                            </DataGridCheckBoxColumn.HeaderTemplate>
+                        </DataGridCheckBoxColumn>
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding Producto.Nombre}" IsReadOnly="True" Width="*" />
+                        <DataGridTextColumn Header="Cantidad Disponible" Binding="{Binding Producto.StockActual}" IsReadOnly="True" Width="*" />
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,20,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Cancelar" x:Name="btnCancelar" Click="btnCancelar_Click"
+            Background="LightGray" Foreground="Black"
+            FontWeight="Bold" Height="40" Width="120" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource HoverButtonStyle}">
+                            <Setter Property="Background" Value="LightGray"/>
+                            <Setter Property="Margin" Value="0 0 10 0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="DarkGray"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Guardar" x:Name="btnGuardar" Click="btnGuardar_Click"
+            Background="{StaticResource PrimaryBrush}" Foreground="White"
+            FontWeight="Bold" Height="40" Width="120" BorderThickness="0"
+            Style="{StaticResource HoverButtonStyle}" Margin="0,0,10,0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

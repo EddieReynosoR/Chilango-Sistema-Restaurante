@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="SistemaRestaurante.Views.UserControls.WindowControls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SistemaRestaurante.Views.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="40">
+
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,5,0">
+        <Button x:Name="MinimizeButton" Content="—" Width="30" Click="MinimizeButton_Click" Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Foreground="Gray" />
+        <Button x:Name="MaxRestoreButton" Content="🗖" Width="30" Click="MaxRestoreButton_Click" Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Foreground="Gray" />
+        <Button x:Name="CloseButton" Content="✕" Width="30" Click="CloseButton_Click" Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Foreground="Gray" />
+    </StackPanel>
+</UserControl>

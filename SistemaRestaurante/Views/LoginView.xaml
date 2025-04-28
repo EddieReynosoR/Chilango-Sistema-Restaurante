@@ -1,0 +1,159 @@
+﻿<Window x:Class="SistemaRestaurante.Views.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SistemaRestaurante.Views"
+        xmlns:controls="clr-namespace:SistemaRestaurante.Views.UserControls"
+        mc:Ignorable="d"
+        Title="Login" MinHeight="380" MinWidth="620" Height="500" Width="700"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <Style x:Key="HoverButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="5"
+                  SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                      Property="Background"
+                      Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border"
+                      Property="Background"
+                      Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border"
+                      Property="Opacity"
+                      Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HoverTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="3"
+                  SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                          Padding="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                      Property="BorderBrush"
+                      Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="border"
+                      Property="BorderBrush"
+                      Value="{StaticResource PrimaryDarkBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border"
+                      Property="Opacity"
+                      Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" CornerRadius="10">
+        <DockPanel>
+            <controls:WindowControls DockPanel.Dock="Top" 
+                            ShowMinimize="True"
+                            ShowMaxRestore="False"
+                            ShowClose="True" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Image
+                    Source="/Assets/Images/white-logo.png"
+                    Width="300"
+                    Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+
+                <Border Background="White" Margin="20" CornerRadius="20" Grid.Column="1" Padding="40">
+                    <Border.Effect>
+                        <DropShadowEffect 
+                            BlurRadius="10"
+                            ShadowDepth="3"
+                            Opacity="0.5"
+                            />
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="150" />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Bienvenido a Chilango" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" Width="230" />
+                        <TextBlock Grid.Row="1" Text="Sistema de restaurante" FontSize="14" Foreground="Gray" TextWrapping="Wrap" Width="230" Margin="3,0,0,0" />
+
+                        <StackPanel Grid.Row="2" VerticalAlignment="Center">
+                            <TextBlock Text="Usuario" FontWeight="SemiBold" />
+                            <TextBox Name="tbxUsuario" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Height="30"      BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="2" Margin="0,0,0,15" 
+                                Style="{StaticResource HoverTextBoxStyle}" VerticalContentAlignment="Center" />
+                            <TextBlock Text="Contraseña" FontWeight="SemiBold" />
+                            <TextBox Name="tbxPassword" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Height="30" BorderBrush="{StaticResource PrimaryDarkBrush}" BorderThickness="2" Style="{StaticResource HoverTextBoxStyle}" VerticalContentAlignment="Center" />
+                        </StackPanel>
+
+                        <Border Grid.Row="3" CornerRadius="20">
+                            <Button Content="Iniciar sesión"
+                                Background="{StaticResource PrimaryBrush}" Foreground="White"
+                                FontWeight="Bold" Height="45" BorderThickness="0" Click="Button_Click"
+                                Style="{StaticResource HoverButtonStyle}" />
+                        </Border>
+
+                        <TextBlock Grid.Row="4" HorizontalAlignment="Center" Foreground="Gray">
+                        ¿No tienes una cuenta? 
+                        <Hyperlink Click="Hyperlink_Click" TextDecorations="None" Cursor="Hand" Foreground="{StaticResource PrimaryBrush}">Regístrate</Hyperlink>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DockPanel>
+    </Border>
+</Window>

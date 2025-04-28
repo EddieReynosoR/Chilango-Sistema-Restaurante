@@ -1,0 +1,77 @@
+﻿<Page x:Class="SistemaRestaurante.Views.Pages.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SistemaRestaurante.Views.Pages"
+      xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MainPage">
+
+    <Border Background="{StaticResource BackGroundBrush}" CornerRadius="10" SnapsToDevicePixels="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="120" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border Style="{StaticResource WhiteBorder}">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Border Width="50" Height="50" CornerRadius="10" Margin="5 0 20 0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="{StaticResource PrimaryColor}" Offset="0" />
+                                    <GradientStop Color="{StaticResource PrimaryDarkColor}" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <icon:PackIconMaterial Kind="Account" Foreground="White" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding UsuarioNombre}" FontSize="26" FontWeight="Bold" />
+                            <TextBlock Text="{Binding UsuarioRol}" Foreground="#6c879a" Margin="0 3 0 0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <!--<Border Grid.Row="1" Style="{StaticResource WhiteBorder}" Margin="20 20 20 0">
+                <Grid Margin="15 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Ventas" FontSize="20" FontWeight="Bold" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 8 10 0">
+                        <Border Width="12" Height="12" Background="#0074FF" CornerRadius="3" />
+                        <TextBlock Text="Cocina" VerticalAlignment="Center" Margin="7 0 20 0" Foreground="#6C879A" />
+
+                        <Border Width="12" Height="12" Background="{StaticResource PrimaryBrush}" CornerRadius="3" />
+                        <TextBlock Text="Bebidas" VerticalAlignment="Center" Margin="7 0 20 0" Foreground="#6C879A" />
+                    </StackPanel>
+
+                    <lvc:CartesianChart Grid.Row="1" Margin="5 10 0 0" LegendLocation="None" Series="{Binding VentasSeries}">
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Foreground="#90A3B2" ShowLabels="True">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0" Step="2"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis MinValue="0" MaxValue="350" Foreground="#90A3B2" ShowLabels="True">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                </Grid>
+            </Border>-->
+        </Grid>
+    </Border>
+</Page>
