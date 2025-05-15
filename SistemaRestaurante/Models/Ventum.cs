@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace SistemaRestaurante.Models;
 
 public partial class Ventum
@@ -17,6 +18,8 @@ public partial class Ventum
     public decimal PropinaBebidas { get; set; }
 
     public DateTime FechaVenta { get; set; }
+
+    public bool Estatus { get; set; }
 
     public virtual Orden IdOrdenNavigation { get; set; } = null!;
 }

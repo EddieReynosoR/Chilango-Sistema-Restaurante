@@ -13,7 +13,9 @@ public partial class OrdenPlatillo
 
     public int Cantidad { get; set; }
 
-    public virtual Orden? Orden { get; set; }
+    public bool Estatus { get; set; }
 
-    public virtual Platillo? Platillo { get; set; }
+    public virtual Orden Orden { get; set; } = null!;
+
+    public virtual Platillo Platillo { get; set; } = null!;
 }

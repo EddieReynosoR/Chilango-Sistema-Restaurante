@@ -15,6 +15,8 @@ public partial class Usuario
 
     public int IdRol { get; set; }
 
+    public bool Estatus { get; set; }
+
     public virtual Rol IdRolNavigation { get; set; } = null!;
 
     public virtual ICollection<Orden> Ordens { get; set; } = new List<Orden>();

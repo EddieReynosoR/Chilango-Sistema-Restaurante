@@ -74,7 +74,6 @@ namespace SistemaRestaurante.ViewModels
                 if (!_restauranteFacade.EliminarMesa(mesa))
                 {
                     MessageBox.Show("Ocurrió un error al eliminar la mesa.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
                     return false;
                 }
 

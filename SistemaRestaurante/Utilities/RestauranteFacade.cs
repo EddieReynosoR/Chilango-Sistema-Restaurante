@@ -7,8 +7,6 @@ namespace SistemaRestaurante.Utilities
 {
     internal class RestauranteFacade
     {
-        // Uso de par de repositorios para realizar operaciones en base de datos.
-        // (Potencialmente pueden agregarse más métodos.
         private readonly MesaRepository _mesaRepository;
         private readonly OrdenRepository _ordenRepository;
 
@@ -18,19 +16,16 @@ namespace SistemaRestaurante.Utilities
             _ordenRepository = new OrdenRepository(context);
         }
 
-        // Método utilizado para consultar las mesas en base de datos.
         public ObservableCollection<Mesa> ObtenerMesas()
         {
             return [.. _mesaRepository.ObtenerMesas()];
         }
 
-        // Método utilizado consultar si una mesa ya tiene alguna orden activa asignada.
         public Orden? ExisteOrden(int idMesa)
         {
             return _ordenRepository.ExisteOrdenEnMesa(idMesa);
         }
 
-        // Método utilizado para asignar una nueva orden a una mesa seleccionada.
         public Orden? AbrirOrdenParaMesa(Mesa mesa)
         {
             try
@@ -58,7 +53,6 @@ namespace SistemaRestaurante.Utilities
             }
         }
 
-        // Método utilizado para eliminar una mesa.
         public bool EliminarMesa(Mesa mesa)
         {
             try
@@ -69,7 +63,9 @@ namespace SistemaRestaurante.Utilities
                     return false;
                 }
 
-                return _mesaRepository.EliminarMesa(mesa);
+                mesa.Estatus = false;
+
+                return _mesaRepository.GuardarCambios(mesa);
             }
             catch (Exception)
             {
@@ -77,7 +73,6 @@ namespace SistemaRestaurante.Utilities
             }
         }
 
-        // Método para agregar una mesa nueva.
         public bool AgregarMesa(int numeroMesa)
         {           
             try

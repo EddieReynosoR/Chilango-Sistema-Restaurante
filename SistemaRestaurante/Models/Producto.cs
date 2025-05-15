@@ -13,5 +13,7 @@ public partial class Producto
 
     public int Minimo { get; set; }
 
+    public bool Estatus { get; set; }
+
     public virtual ICollection<PlatilloProducto> PlatilloProductos { get; set; } = new List<PlatilloProducto>();
 }

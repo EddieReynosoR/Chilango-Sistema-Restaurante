@@ -14,7 +14,7 @@ namespace SistemaRestaurante.Repositories
 
         public List<Ventum> ObtenerVentas()
         {
-            return [.. _context.Venta];
+            return [.. _context.Venta.Where(v => v.Estatus)];
         }
 
         public List<Ventum> ObtenerVentasPorFecha(DateTime fecha)
@@ -24,7 +24,9 @@ namespace SistemaRestaurante.Repositories
 
         public bool EliminarVenta(Ventum ventum)
         {
-            _context.Venta.Remove(ventum);
+            ventum.Estatus = false;
+            _context.Entry(ventum).State = EntityState.Modified;
+
             return _context.SaveChanges() > 0;
         }
     }

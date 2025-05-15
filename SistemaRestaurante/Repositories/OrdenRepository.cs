@@ -1,53 +1,32 @@
-﻿using SistemaRestaurante.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaRestaurante.Models;
 using SistemaRestaurante.ViewModels;
 using System.Collections.ObjectModel;
 using static SistemaRestaurante.Utilities.GlobalUtilities;
 
 namespace SistemaRestaurante.Repositories
 {
-    /// <summary>
-    /// Repositorio para manejar las operaciones relacionadas con las órdenes del restaurante.
-    /// </summary>
     internal class OrdenRepository
     {
         private readonly RestauranteDbContext _context;
 
-        /// <summary>
-        /// Inicializa una nueva instancia del repositorio de órdenes.
-        /// </summary>
-        /// <param name="context">Contexto de base de datos de restaurante.</param>
         public OrdenRepository(RestauranteDbContext context)
         {
             _context = context;
         }
 
-        /// <summary>
-        /// Verifica si existe una orden activa en una mesa específica.
-        /// </summary>
-        /// <param name="idMesa">Identificador de la mesa.</param>
-        /// <returns>La orden activa si existe; de lo contrario, <c>null</c>.</returns>
         public Orden? ExisteOrdenEnMesa(int idMesa) => _context.Ordens.FirstOrDefault(o => o.MesaId == idMesa && o.Estatus);
 
-        /// <summary>
-        /// Agrega una nueva orden al sistema.
-        /// </summary>
-        /// <param name="orden">Orden a agregar.</param>
-        /// <returns><c>true</c> si la operación fue exitosa; de lo contrario, <c>false</c>.</returns>
         public bool AgregarOrden(Orden orden)
         {
             _context.Ordens.Add(orden);
             return _context.SaveChanges() > 0;
         }
 
-        /// <summary>
-        /// Obtiene los platillos previamente guardados en una orden.
-        /// </summary>
-        /// <param name="idOrden">Identificador de la orden.</param>
-        /// <returns>Lista de platillos seleccionados.</returns>
         public List<PlatilloSeleccionado> ObtenerPlatillosGuardados(int idOrden)
         {
             return _context.OrdenPlatillos
-                .Where(o => o.OrdenId == idOrden && o.Platillo != null)
+                .Where(o => o.OrdenId == idOrden && o.Platillo != null && o.Estatus)
                 .Select(o => new PlatilloSeleccionado(o.Platillo)
                 {
                     IsSelected = true,
@@ -56,12 +35,6 @@ namespace SistemaRestaurante.Repositories
                 .ToList();
         }
 
-        /// <summary>
-        /// Guarda los platillos seleccionados para una orden específica.
-        /// </summary>
-        /// <param name="platillos">Colección de platillos seleccionados.</param>
-        /// <param name="idOrden">Identificador de la orden.</param>
-        /// <returns><c>true</c> si la operación fue exitosa; de lo contrario, <c>false</c>.</returns>
         public bool GuardarPlatillosOrden(ObservableCollection<PlatilloSeleccionado> platillos, int idOrden)
         {
             using var transaction = _context.Database.BeginTransaction();
@@ -77,7 +50,10 @@ namespace SistemaRestaurante.Repositories
                     .ToList();
 
                 foreach (var platilloEliminar in platillosParaEliminar)
-                    _context.OrdenPlatillos.Remove(platilloEliminar);
+                {
+                    platilloEliminar.Estatus = false;
+                    _context.Entry(platilloEliminar).State = EntityState.Modified;
+                }
 
                 foreach (var platillo in platillos)
                 {
@@ -109,11 +85,6 @@ namespace SistemaRestaurante.Repositories
             }
         }
 
-        /// <summary>
-        /// Cancela una orden existente y libera la mesa asociada.
-        /// </summary>
-        /// <param name="idOrden">Identificador de la orden a cancelar.</param>
-        /// <returns><c>true</c> si la cancelación fue exitosa; de lo contrario, <c>false</c>.</returns>
         public bool CancelarOrden(int idOrden)
         {
             using var transaction = _context.Database.BeginTransaction();
@@ -124,7 +95,11 @@ namespace SistemaRestaurante.Repositories
                     .Where(o => o.OrdenId == idOrden)
                     .ToList();
 
-                _context.OrdenPlatillos.RemoveRange(platillosAsignados);
+                foreach (var platilloEliminar in platillosAsignados)
+                {
+                    platilloEliminar.Estatus = false;
+                    _context.Entry(platilloEliminar).State = EntityState.Modified;
+                }
 
                 var orden = _context.Ordens
                     .FirstOrDefault(o => o.IdOrden == idOrden);
@@ -136,7 +111,8 @@ namespace SistemaRestaurante.Repositories
                     if (mesa != null)
                         mesa.Ocupada = false;
 
-                    _context.Ordens.Remove(orden);
+                    orden.Estatus = false;
+                    _context.Entry(orden).State = EntityState.Modified;
                 }
 
                 _context.SaveChanges();
@@ -150,11 +126,6 @@ namespace SistemaRestaurante.Repositories
             }
         }
 
-        /// <summary>
-        /// Valida que haya suficiente stock de productos para los platillos seleccionados.
-        /// </summary>
-        /// <param name="platillos">Colección de platillos seleccionados.</param>
-        /// <returns><c>true</c> si hay suficiente stock para todos los productos; de lo contrario, <c>false</c>.</returns>
         public bool ValidarCantidadProductos(ObservableCollection<PlatilloSeleccionado> platillos)
         {
             foreach (var platilloSeleccionado in platillos)
@@ -167,7 +138,7 @@ namespace SistemaRestaurante.Repositories
                 {
                     var productoExistente = _context.Productos.FirstOrDefault(p => p.IdProducto == producto.ProductoId);
 
-                    if (productoExistente == null || productoExistente.StockActual < producto.CantidadNecesaria)
+                    if (productoExistente == null || productoExistente.StockActual < producto.CantidadNecesaria * platilloSeleccionado.Cantidad)
                         return false;
                 }
             }
@@ -175,13 +146,6 @@ namespace SistemaRestaurante.Repositories
             return true;
         }
 
-        /// <summary>
-        /// Genera una venta a partir de una orden, actualizando inventarios y registrando propinas.
-        /// </summary>
-        /// <param name="platillos">Colección de platillos vendidos.</param>
-        /// <param name="idOrden">Identificador de la orden.</param>
-        /// <param name="propina">Porcentaje de propina aplicado.</param>
-        /// <returns><c>true</c> si la venta se registró exitosamente; de lo contrario, <c>false</c>.</returns>
         public bool GenerarVenta(ObservableCollection<PlatilloSeleccionado> platillos, int idOrden, decimal propina)
         {
             using var transaction = _context.Database.BeginTransaction();
@@ -210,7 +174,14 @@ namespace SistemaRestaurante.Repositories
                         var ingredienteDb = _context.Productos.FirstOrDefault(i => i.IdProducto == ingrediente.ProductoId);
 
                         if (ingredienteDb != null)
-                            ingredienteDb.StockActual -= ingrediente.CantidadNecesaria;
+                        {
+                            var cantidadARestar = ingrediente.CantidadNecesaria * platilloSeleccionado.Cantidad;
+
+                            if (ingredienteDb.StockActual >= cantidadARestar)
+                                ingredienteDb.StockActual -= cantidadARestar;
+                            else
+                                ingredienteDb.StockActual = 0;
+                        }
                     }
                 }
 

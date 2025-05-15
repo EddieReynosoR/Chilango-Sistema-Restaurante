@@ -13,6 +13,8 @@ public partial class Platillo
 
     public string Area { get; set; } = null!;
 
+    public bool Estatus { get; set; }
+
     public virtual ICollection<OrdenPlatillo> OrdenPlatillos { get; set; } = new List<OrdenPlatillo>();
 
     public virtual ICollection<PlatilloProducto> PlatilloProductos { get; set; } = new List<PlatilloProducto>();

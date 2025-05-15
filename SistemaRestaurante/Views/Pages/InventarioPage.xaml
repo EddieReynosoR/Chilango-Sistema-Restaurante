@@ -100,7 +100,7 @@
                     <DataGridTextColumn Header="Cantidad Disponible" Binding="{Binding StockActual}" IsReadOnly="True" Width="*" />
                     <DataGridTextColumn Header="Cantidad Necesaria" Binding="{Binding Minimo}"  IsReadOnly="True" Width="*" />
 
-                    <DataGridTemplateColumn Header="Operaciones" IsReadOnly="True" Width="auto">
+                    <DataGridTemplateColumn Header="" IsReadOnly="True" Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

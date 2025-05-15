@@ -11,5 +11,7 @@ public partial class Mesa
 
     public bool Ocupada { get; set; }
 
+    public bool Estatus { get; set; }
+
     public virtual ICollection<Orden> Ordens { get; set; } = new List<Orden>();
 }

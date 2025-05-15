@@ -16,7 +16,8 @@ namespace SistemaRestaurante.Repositories
             var usuario = _context.Usuarios
                                     .Include(u => u.IdRolNavigation)
                                     .FirstOrDefault(u => u.NombreUsuario == nombreUsuario
-                                        && u.Password == password);
+                                        && u.Password == password
+                                        && u.Estatus);
 
             return usuario;
         }

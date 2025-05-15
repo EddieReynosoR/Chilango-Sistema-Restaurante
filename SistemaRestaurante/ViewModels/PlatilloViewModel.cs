@@ -38,5 +38,10 @@ namespace SistemaRestaurante.ViewModels
 
             OnPropertyChanged(nameof(CantidadPlatillos));
         }
+
+        public bool EliminarPlatillo(Platillo platillo)
+        {
+            return _platilloRepository.Eliminar(platillo);
+        }
     }
 }

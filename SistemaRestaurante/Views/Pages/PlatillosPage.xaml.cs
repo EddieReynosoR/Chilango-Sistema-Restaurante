@@ -1,6 +1,7 @@
 ﻿using SistemaRestaurante.Models;
 using SistemaRestaurante.ViewModels;
 using SistemaRestaurante.Views.Dialogs;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SistemaRestaurante.Views.Pages
@@ -42,7 +43,17 @@ namespace SistemaRestaurante.Views.Pages
 
         private void btnEliminar_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            
+            var button = sender as Button;
+            if (button?.Tag is Platillo platillo)
+            {
+                if(_viewModel.EliminarPlatillo(platillo))
+                {
+                    MessageBox.Show("Ocurrió un error al abrir la orden.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                _viewModel.CargarPlatillos();
+            }
         }
     }
 }

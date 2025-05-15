@@ -13,6 +13,8 @@ public partial class PlatilloProducto
 
     public int CantidadNecesaria { get; set; }
 
+    public bool Estatus { get; set; }
+
     public virtual Platillo? Platillo { get; set; }
 
     public virtual Producto? Producto { get; set; }

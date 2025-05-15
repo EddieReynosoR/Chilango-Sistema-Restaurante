@@ -195,13 +195,10 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="Operaciones" IsReadOnly="True" Width="auto">
+                    <DataGridTemplateColumn Header="" IsReadOnly="True" Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <!--<Button Tag="{Binding}" x:Name="btnEditar" Style="{StaticResource GridEditButton}" Click="btnEditar_Click">
-                                        <icon:PackIconMaterial Kind="PencilOutline" Style="{StaticResource GridButtonIcon}" />
-                                    </Button>-->
                                     <Button Tag="{Binding}" x:Name="btnEliminar" Margin="5 0 0 0" Style="{StaticResource GridDeleteButton}" Click="btnEliminar_Click">
                                         <icon:PackIconMaterial Kind="DeleteOutline" Style="{StaticResource GridButtonIcon}" />
                                     </Button>

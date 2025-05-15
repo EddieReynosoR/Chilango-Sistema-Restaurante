@@ -99,7 +99,7 @@
                     <DataGridTextColumn Header="Precio" Binding="{Binding Precio, StringFormat=C}" IsReadOnly="True" Width="*" />
                     <DataGridTextColumn Header="Área" Binding="{Binding Area}" IsReadOnly="True" Width="*" />
 
-                    <DataGridTemplateColumn Header="Operaciones" IsReadOnly="True" Width="auto">
+                    <DataGridTemplateColumn Header="" IsReadOnly="True" Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
