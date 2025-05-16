@@ -1,5 +1,6 @@
 ﻿using SistemaRestaurante.Models;
 using SistemaRestaurante.Repositories;
+using SistemaRestaurante.Utilities.ValidadorOrden;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -50,6 +51,16 @@ namespace SistemaRestaurante.ViewModels
         {
             try
             {
+                var validador1 = new NoVacioValidator();
+                var validador2 = new CantidadValidaValidator();
+                var validador3 = new SinDuplicadosValidator();
+
+                validador1
+                    .SetNext(validador2)
+                    .SetNext(validador3);
+
+                validador1.Validate(Platillos);
+
                 if (!_ordenRepository.GuardarPlatillosOrden(Platillos, IdOrden))
                 {
                     MessageBox.Show("Ocurrió un error al guardar la orden.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -57,14 +68,13 @@ namespace SistemaRestaurante.ViewModels
                 }
 
                 MessageBox.Show("Orden guardada correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                return true;
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Ocurrió un error al guardar la orden. {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error de validación: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-
-            return true;
         }
 
         public bool EliminarPlatillo(PlatilloSeleccionado platilloSeleccionado)

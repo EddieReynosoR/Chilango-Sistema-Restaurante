@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
-namespace SistemaRestaurante.Utilities
+namespace SistemaRestaurante.Utilities.Facade
 {
     internal class ReporteVentaFacade : IReporteVenta
     {

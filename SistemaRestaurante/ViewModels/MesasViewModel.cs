@@ -1,5 +1,5 @@
 ﻿using SistemaRestaurante.Models;
-using SistemaRestaurante.Utilities;
+using SistemaRestaurante.Utilities.Facade;
 using System.Collections.ObjectModel;
 using System.Windows;
 

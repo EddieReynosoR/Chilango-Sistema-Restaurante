@@ -3,7 +3,7 @@ using SistemaRestaurante.Repositories;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace SistemaRestaurante.Utilities
+namespace SistemaRestaurante.Utilities.Facade
 {
     internal class RestauranteFacade
     {
