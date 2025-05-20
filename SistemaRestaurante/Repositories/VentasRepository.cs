@@ -19,7 +19,7 @@ namespace SistemaRestaurante.Repositories
 
         public List<Ventum> ObtenerVentasPorFecha(DateTime fecha)
         {
-            return [.. _context.Venta.Where(v => v.FechaVenta.Date == fecha.Date).AsNoTracking()];
+            return [.. _context.Venta.Where(v => v.FechaVenta.Date == fecha.Date && v.Estatus).AsNoTracking()];
         }
 
         public bool EliminarVenta(Ventum ventum)

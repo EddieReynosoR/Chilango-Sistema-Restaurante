@@ -1,6 +1,7 @@
 ﻿using SistemaRestaurante.Repositories;
 using SistemaRestaurante.Models;
 using SistemaRestaurante.Utilities;
+using System.Windows;
 
 namespace SistemaRestaurante.ViewModels
 {
@@ -34,10 +35,16 @@ namespace SistemaRestaurante.ViewModels
 
         public bool UsuarioLogin()
         {
-            var usuario = _usuarioRepository.UsuarioLogin(Username, Password);
-
-            if (usuario != null)
+            try
             {
+                var usuario = _usuarioRepository.UsuarioLogin(Username);
+
+                if (usuario == null)
+                    return false;
+
+                if (!PasswordHasher.Verify(Password, usuario.Password))
+                    return false;
+
                 Session.Instance.IdUsuario = usuario.IdUsuario;
                 Session.Instance.Usuario = usuario.NombreUsuario;
                 Session.Instance.Nombre = usuario.Nombre;
@@ -45,8 +52,11 @@ namespace SistemaRestaurante.ViewModels
 
                 return true;
             }
-
-            return false;
+            catch (Exception)
+            {
+                MessageBox.Show("Ocurrió un error iniciar sesión.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }           
         }
     }
 }

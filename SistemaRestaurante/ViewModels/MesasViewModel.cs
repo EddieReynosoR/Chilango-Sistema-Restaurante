@@ -19,7 +19,11 @@ namespace SistemaRestaurante.ViewModels
             }
         }
 
-        public int CantidadMesas => Mesas?.Count ?? 0;
+        public int CantidadMesas
+        {
+            get => Mesas?.Count ?? 0;
+            set => OnPropertyChanged(nameof(CantidadMesas));
+        }
 
         private readonly RestauranteFacade _restauranteFacade;
 
@@ -31,7 +35,8 @@ namespace SistemaRestaurante.ViewModels
 
         public async void CargarMesas()
         {
-            Mesas = [.. await Task.Run(() => _restauranteFacade.ObtenerMesas())];
+            Mesas = [.. await Task.Run(_restauranteFacade.ObtenerMesas)];
+            CantidadMesas = Mesas.Count;
         }
 
         public Orden? ExisteOrden(int idMesa) => _restauranteFacade.ExisteOrden(idMesa);

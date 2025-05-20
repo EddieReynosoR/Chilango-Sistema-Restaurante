@@ -11,15 +11,20 @@ namespace SistemaRestaurante.Repositories
             _context = context;
         }
 
-        public Usuario? UsuarioLogin(string nombreUsuario, string password)
+        public Usuario? UsuarioLogin(string nombreUsuario)
         {
-            var usuario = _context.Usuarios
-                                    .Include(u => u.IdRolNavigation)
-                                    .FirstOrDefault(u => u.NombreUsuario == nombreUsuario
-                                        && u.Password == password
-                                        && u.Estatus);
+            return _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefault(u => u.NombreUsuario == nombreUsuario
+                    && u.Estatus);
+        }
 
-            return usuario;
+        public List<Rol> ConsultarRoles() => [.. _context.Rols.Where(r => r.Estatus)];
+
+        public bool RegistrarUsuario(Usuario usuario)
+        {
+            _context.Usuarios.Add(usuario);
+            return _context.SaveChanges() > 0;
         }
     }
 }

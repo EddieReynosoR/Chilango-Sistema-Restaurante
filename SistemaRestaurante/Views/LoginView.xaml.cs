@@ -32,8 +32,9 @@ namespace SistemaRestaurante.Views
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Módulo no disponible", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
-            // GlobalUtilities.OpenWindow(new RegistroUsuarioView(), this);
+            GlobalUtilities.OpenWindow(new RegistroUsuarioView(), this);
         }
+
+        private void tbxPassword_PasswordChanged(object sender, RoutedEventArgs e) => _viewModel.Password = tbxPassword.Password;
     }
 }

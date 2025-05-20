@@ -37,7 +37,7 @@ namespace SistemaRestaurante.ViewModels
 
         public async void CargarVentas()
         {
-            Ventas = new ObservableCollection<Ventum>(await Task.Run(() => _reporteVentaFacade.ObtenerVentas()));
+            Ventas = new ObservableCollection<Ventum>(await Task.Run(_reporteVentaFacade.ObtenerVentas));
 
             OnPropertyChanged(nameof(CantidadVentas));
         }
@@ -80,8 +80,6 @@ namespace SistemaRestaurante.ViewModels
             }
 
             var productos = _reporteVentaFacade.ObtenerProductosParaReabastecer();
-
-            // Se ejecuta la generación del PDF utilizando el Proxy
             return _reporteVenta.GenerarReporteCorteCaja(ventas, productos, fecha);
         }
     }

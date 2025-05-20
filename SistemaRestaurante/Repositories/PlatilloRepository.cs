@@ -21,7 +21,7 @@ namespace SistemaRestaurante.Repositories
         public List<Producto> ObtenerIngredientesPlatillo(int idPlatillo)
         {
             return [.. _context.PlatilloProductos
-                .Where(p => p.PlatilloId == idPlatillo)
+                .Where(p => p.PlatilloId == idPlatillo && p.Estatus)
                 .Select(p => new Producto
                 {
                     IdProducto = p.Producto.IdProducto,
