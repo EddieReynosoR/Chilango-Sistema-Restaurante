@@ -27,7 +27,7 @@ namespace SistemaRestaurante.ViewModels
 
         public OrdenViewModel(Orden orden)
         {
-            _ordenRepository = new OrdenRepository(new RestauranteDbContext());
+            _ordenRepository = new OrdenRepository(new SoftwareRestauranteContext());
             IdOrden = orden.IdOrden;
             TituloOrden = $"Orden ID #{orden.IdOrden}";
         }
@@ -104,12 +104,28 @@ namespace SistemaRestaurante.ViewModels
         {
             try
             {
+                var viewModel = App.MesasViewModel;
+
                 if (!_ordenRepository.CancelarOrden(IdOrden))
                 {
-                    MessageBox.Show($"Ocurrió un error al cancelar el platillo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Ocurrió un error al cancelar la orden", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
                 }
-                
+
+                App.TemporizadorOrdenes.RemoverOrden(IdOrden);
+
+                var mesa = viewModel.Mesas.FirstOrDefault(m => m.OrdenActiva != null && m.OrdenActiva.IdOrden == IdOrden);
+
+                if (mesa == null)
+                {
+                    MessageBox.Show($"Ocurrió un error al cancelar la orden.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+
+                mesa.OrdenActiva = null;
+                mesa.TiempoOrden = null;
+                mesa.Mesa.Ocupada = false;
+
                 return true;
             }
             catch (Exception ex)

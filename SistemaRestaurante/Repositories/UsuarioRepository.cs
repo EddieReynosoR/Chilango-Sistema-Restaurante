@@ -4,9 +4,9 @@ namespace SistemaRestaurante.Repositories
 {
     internal class UsuarioRepository
     {
-        private readonly RestauranteDbContext _context;
+        private readonly SoftwareRestauranteContext _context;
 
-        public UsuarioRepository(RestauranteDbContext context)
+        public UsuarioRepository(SoftwareRestauranteContext context)
         {
             _context = context;
         }

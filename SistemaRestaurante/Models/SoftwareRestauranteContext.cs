@@ -142,12 +142,11 @@ public partial class SoftwareRestauranteContext : DbContext
         {
             entity.HasKey(e => e.IdUsuario);
 
-            entity.Property(e => e.IdUsuario).ValueGeneratedNever();
+            entity.Property(e => e.IdUsuario).ValueGeneratedOnAdd();
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.NombreUsuario)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Password).HasMaxLength(50);
 
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdRol)

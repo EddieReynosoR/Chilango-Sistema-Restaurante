@@ -1,5 +1,6 @@
 ﻿using SistemaRestaurante.Models;
 using SistemaRestaurante.Repositories;
+using SistemaRestaurante.Utilities.ValidarProducto;
 using System.Windows;
 
 namespace SistemaRestaurante.ViewModels
@@ -77,13 +78,20 @@ namespace SistemaRestaurante.ViewModels
             else
                 ModalTitle = "Agregar Producto";
 
-            _productoRepository = new ProductoRepository(new RestauranteDbContext());
+            _productoRepository = new ProductoRepository(new SoftwareRestauranteContext());
         }
 
         public bool GuardarProducto()
         {
             try
             {
+                var validadorNombre = new ValidadorNombre();
+                var validadorStock = new ValidadorStock();
+                var validadorMinimo = new ValidadorMinimo();
+
+                validadorNombre.Next = validadorStock;
+                validadorStock.Next = validadorMinimo;
+
                 if (Stock == 0 || Minimo == 0 || string.IsNullOrEmpty(Nombre))
                 {
                     MessageBox.Show("Los datos capturados no tienen el formato correcto.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -96,40 +104,41 @@ namespace SistemaRestaurante.ViewModels
                     IdProducto = IdProducto,
                     Nombre = Nombre,
                     StockActual = Stock,
-                    Minimo = Minimo
+                    Minimo = Minimo,
+                    Estatus = true
                 };
+
+                if (!validadorNombre.Validar(producto, out string mensajeError))
+                {
+                    MessageBox.Show(mensajeError, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+
+                bool operacionExitosa;
+                string mensaje;
 
                 if (producto.IdProducto == 0)
                 {
-                    if (!_productoRepository.AgregarProducto(producto))
-                    {
-                        MessageBox.Show("Ocurrió un error al agregar el producto.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        return false;
-                    }
-
-                    MessageBox.Show("Producto guardado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    operacionExitosa = _productoRepository.AgregarProducto(producto);
+                    mensaje = operacionExitosa ? "Producto guardado exitosamente." : "Ocurrió un error al agregar el producto.";
                 }
                 else
                 {
-                    if (!_productoRepository.EditarProducto(producto))
-                    {
-                        MessageBox.Show("Ocurrió un error al editar el producto.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        return false;
-                    }
-
-                    MessageBox.Show("Producto editado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    operacionExitosa = _productoRepository.EditarProducto(producto);
+                    mensaje = operacionExitosa ? "Producto editado exitosamente." : "Ocurrió un error al editar el producto.";
                 }
+
+                MessageBox.Show(mensaje, operacionExitosa ? "Éxito" : "Error", MessageBoxButton.OK,
+                                operacionExitosa ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+                return operacionExitosa;
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Ocurrió un error al registrar los cambios en el producto. {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 return false;
-            }           
-
-            return true;
+            }
         }
     }
 }

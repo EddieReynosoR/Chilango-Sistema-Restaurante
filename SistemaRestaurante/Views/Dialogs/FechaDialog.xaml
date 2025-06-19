@@ -260,12 +260,13 @@ SnapsToDevicePixels="True">
 
     </Window.Resources>
 
-    <Border Background="White" Margin="20" CornerRadius="20" Padding="30" Width="600" Height="240">
+    <Border Background="White" Margin="20" CornerRadius="20" Padding="30" Width="600" Height="300">
         <Border.Effect>
             <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5" />
         </Border.Effect>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -308,7 +309,13 @@ SnapsToDevicePixels="True">
                 </DatePicker>
             </StackPanel>
 
-            <StackPanel Grid.Row="2" Margin="0,20,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel Grid.Row="2" VerticalAlignment="Center">
+            <TextBlock Text="Correo electrónico" FontWeight="SemiBold" />
+                <TextBox Name="tbxCorreo" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Height="30"      BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="2" Margin="0,0,0,15" 
+                                Style="{StaticResource HoverTextBoxStyle}" VerticalContentAlignment="Center" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,20,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Cancelar" x:Name="btnCancelar" Click="btnCancelar_Click"
           Background="LightGray" Foreground="Black"
           FontWeight="Bold" Height="40" Width="120" BorderThickness="0">

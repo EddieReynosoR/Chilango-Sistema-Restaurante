@@ -28,7 +28,7 @@ namespace SistemaRestaurante.ViewModels
 
         public PlatilloViewModel()
         {
-            _platilloRepository = new PlatilloRepository(new RestauranteDbContext());
+            _platilloRepository = new PlatilloRepository(new SoftwareRestauranteContext());
             CargarPlatillos();
         }
 

@@ -15,6 +15,10 @@ public partial class Orden
 
     public bool Estatus { get; set; }
 
+    public bool EsTardio { get; set; }
+
+    public int SegundosTardio { get; set; }
+
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 
     public virtual Mesa? Mesa { get; set; }

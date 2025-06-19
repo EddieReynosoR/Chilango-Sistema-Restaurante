@@ -5,9 +5,9 @@ namespace SistemaRestaurante.Repositories
 {
     internal class ProductoRepository
     {
-        private readonly RestauranteDbContext _context;
+        private readonly SoftwareRestauranteContext _context;
 
-        public ProductoRepository(RestauranteDbContext context)
+        public ProductoRepository(SoftwareRestauranteContext context)
         {
             _context = context;
         }
@@ -20,7 +20,7 @@ namespace SistemaRestaurante.Repositories
             return _context.SaveChanges() > 0;
         }
 
-        public Producto? ObtenerProductoPorId(int idProducto) => _context.Productos.FirstOrDefault(p => p.IdProducto == idProducto);
+        public Producto? ObtenerProductoPorId(int idProducto) => _context.Productos.FirstOrDefault(p => p.IdProducto == idProducto && p.Estatus);
 
         public bool EditarProducto(Producto producto)
         {

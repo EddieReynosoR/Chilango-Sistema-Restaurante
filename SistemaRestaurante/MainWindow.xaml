@@ -13,11 +13,12 @@
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         UseLayoutRounding="True"
-        SnapsToDevicePixels="True">
+        SnapsToDevicePixels="True"
+        Closing="Window_Closing">
         
     <Border Background="{StaticResource BackGroundBrush}" CornerRadius="10" SnapsToDevicePixels="True" MouseDown="Border_MouseDown" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <DockPanel>
-            <controls:WindowControls DockPanel.Dock="Top"/>
+            <controls:WindowControls DockPanel.Dock="Top" />
 
             <Border Padding="20">
                 <Grid>

@@ -24,7 +24,7 @@ namespace SistemaRestaurante.ViewModels
 
         public InventarioViewModel()
         {
-            _productoRepository = new ProductoRepository(new RestauranteDbContext());
+            _productoRepository = new ProductoRepository(new SoftwareRestauranteContext());
             CargarProductos();
         }
 

@@ -14,7 +14,7 @@ namespace SistemaRestaurante.Utilities.ReporteVentaProxy
             _reporte = reporteReal;
         }
 
-        public bool GenerarReporteCorteCaja(List<Ventum> ventas, List<(Producto Producto, int CantidadFaltante)> productos, DateTime fecha)
+        public bool GenerarReporteCorteCaja(List<Ventum> ventas, List<(Producto Producto, int CantidadFaltante)> productos, DateTime fecha, string? correo = null)
         {
             // Utilizando este proxy, podemos asegurar de que no generemos el PDF de forma innecesaria, al menos de que se indique otra fecha.
             // O se salga y entre a de nuevo al mismo apartado.
@@ -31,7 +31,7 @@ namespace SistemaRestaurante.Utilities.ReporteVentaProxy
                 return false;
             }
 
-            bool resultado = _reporte.GenerarReporteCorteCaja(ventas, productos, fecha);
+            bool resultado = _reporte.GenerarReporteCorteCaja(ventas, productos, fecha, correo);
 
             if (resultado)
             {

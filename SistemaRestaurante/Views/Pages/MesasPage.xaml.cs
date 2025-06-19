@@ -1,5 +1,4 @@
-﻿using SistemaRestaurante.Models;
-using SistemaRestaurante.ViewModels;
+﻿using SistemaRestaurante.ViewModels;
 using SistemaRestaurante.Views.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,7 +16,7 @@ namespace SistemaRestaurante.Views.Pages
         {
             InitializeComponent();
 
-            _viewModel = new MesasViewModel();
+            _viewModel = App.MesasViewModel;
             DataContext = _viewModel;
         }
 
@@ -43,7 +42,7 @@ namespace SistemaRestaurante.Views.Pages
         {
             var button = sender as Button;
 
-            if (button?.Tag is Mesa mesa && _viewModel.EliminarMesa(mesa))
+            if (button?.Tag is MesaWrapper mesa && _viewModel.EliminarMesa(mesa.Mesa))
                 _viewModel.CargarMesas();
         }
 
@@ -54,7 +53,7 @@ namespace SistemaRestaurante.Views.Pages
 
             OrdenMesaWindow modal;
 
-            if (button?.Tag is Mesa mesa)
+            if (button?.Tag is MesaWrapper mesa)
             {
                 var ordenExistente = _viewModel.ExisteOrden(mesa.IdMesa);
 
@@ -62,9 +61,6 @@ namespace SistemaRestaurante.Views.Pages
                 {
                     modal = new OrdenMesaWindow(ordenExistente);
                     result = modal.ShowDialog();
-
-                    if (result == true)
-                        _viewModel.CargarMesas();
                     return;
                 }
 
@@ -85,9 +81,6 @@ namespace SistemaRestaurante.Views.Pages
                 modal = new OrdenMesaWindow(orden);
 
                 result = modal.ShowDialog();
-
-                if (result == true)
-                    _viewModel.CargarMesas();
             }
         }
     }

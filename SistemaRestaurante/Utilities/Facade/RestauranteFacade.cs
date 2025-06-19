@@ -10,7 +10,7 @@ namespace SistemaRestaurante.Utilities.Facade
         private readonly MesaRepository _mesaRepository;
         private readonly OrdenRepository _ordenRepository;
 
-        public RestauranteFacade(RestauranteDbContext context)
+        public RestauranteFacade(SoftwareRestauranteContext context)
         {
             _mesaRepository = new MesaRepository(context);
             _ordenRepository = new OrdenRepository(context);
@@ -20,6 +20,8 @@ namespace SistemaRestaurante.Utilities.Facade
         {
             return [.. _mesaRepository.ObtenerMesas()];
         }
+
+        public bool ExisteMesaActiva() => _mesaRepository.ExisteMesaActiva();
 
         public Orden? ExisteOrden(int idMesa)
         {

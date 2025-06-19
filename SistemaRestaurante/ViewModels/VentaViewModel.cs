@@ -22,11 +22,23 @@ namespace SistemaRestaurante.ViewModels
             }
         }
 
+        private string _correo;
+
+        public string Correo
+        {
+            get => _correo;
+            set
+            {
+                _correo = value;
+                OnPropertyChanged(nameof(Correo));
+            }
+        }
+
         public int CantidadVentas => Ventas?.Count ?? 0;
 
         public VentaViewModel()
         {
-            var context = new RestauranteDbContext();
+            var context = new SoftwareRestauranteContext();
 
             /* Nos aseguramos que utilicemos nuestro Proxy para ejecutar la clase 
              * en donde se genera el PDF */
@@ -80,7 +92,7 @@ namespace SistemaRestaurante.ViewModels
             }
 
             var productos = _reporteVentaFacade.ObtenerProductosParaReabastecer();
-            return _reporteVenta.GenerarReporteCorteCaja(ventas, productos, fecha);
+            return _reporteVenta.GenerarReporteCorteCaja(ventas, productos, fecha, Correo);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace SistemaRestaurante.ViewModels
 
         public AgregarPlatilloOrdenViewModel()
         {
-            _platilloRepository = new PlatilloRepository(new RestauranteDbContext());
+            _platilloRepository = new PlatilloRepository(new SoftwareRestauranteContext());
             AreaSeleccionada = AreaPlatillo.Cocina;
         }
 

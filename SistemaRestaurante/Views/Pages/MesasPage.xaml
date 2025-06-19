@@ -144,6 +144,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Duración" IsReadOnly="True" Width="*" Binding="{Binding TiempoOrden}" />
 
                     <DataGridTemplateColumn Header="Acción" Width="*">
                         <DataGridTemplateColumn.CellTemplate>

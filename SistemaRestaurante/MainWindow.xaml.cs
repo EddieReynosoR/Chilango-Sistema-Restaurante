@@ -1,4 +1,6 @@
-﻿using SistemaRestaurante.Utilities;
+﻿using SistemaRestaurante.Models;
+using SistemaRestaurante.Utilities;
+using SistemaRestaurante.Utilities.Facade;
 using SistemaRestaurante.ViewModels;
 using SistemaRestaurante.Views;
 using SistemaRestaurante.Views.Pages;
@@ -10,6 +12,7 @@ namespace SistemaRestaurante
     public partial class MainWindow : Window
     {
         bool isMaximized = false;
+        private readonly RestauranteFacade _restauranteFacade;
 
         public MainWindow()
         {
@@ -44,6 +47,8 @@ namespace SistemaRestaurante
             };
 
             NavBar.CerrarSesionClicked += CerrarSesion;
+
+            _restauranteFacade = new RestauranteFacade(new SoftwareRestauranteContext());
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -81,6 +86,15 @@ namespace SistemaRestaurante
                 Session.Instance.Usuario = null;
                 GlobalUtilities.OpenWindow(new LoginView(), this);
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!_restauranteFacade.ExisteMesaActiva())
+                return;
+
+            MessageBox.Show("Hay mesas con órdenes activas, termínalas o cancelalas para salir de la aplicación.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            e.Cancel = true;
         }
     }
 }

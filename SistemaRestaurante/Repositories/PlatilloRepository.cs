@@ -6,9 +6,9 @@ namespace SistemaRestaurante.Repositories
 {
     internal class PlatilloRepository
     {
-        private readonly RestauranteDbContext _context;
+        private readonly SoftwareRestauranteContext _context;
 
-        public PlatilloRepository(RestauranteDbContext context)
+        public PlatilloRepository(SoftwareRestauranteContext context)
         {
             _context = context;
         }

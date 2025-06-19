@@ -21,6 +21,21 @@ namespace SistemaRestaurante.ViewModels
             }
         }
 
+        private string _correoElectronico;
+
+        public string CorreoElectronico
+        {
+            get => _correoElectronico;
+            set
+            {
+                if (_correoElectronico != value)
+                {
+                    _correoElectronico = value;
+                    OnPropertyChanged(nameof(CorreoElectronico));
+                }
+            }
+        }
+
         private decimal _porcentajePropina;
 
         public decimal PorcentajePropina
@@ -40,7 +55,7 @@ namespace SistemaRestaurante.ViewModels
 
         public PropinaViewModel()
         {
-            _ordenRepository = new OrdenRepository(new RestauranteDbContext());
+            _ordenRepository = new OrdenRepository(new SoftwareRestauranteContext());
             PorcentajePropina = 0.1m;
         }
 
@@ -52,7 +67,6 @@ namespace SistemaRestaurante.ViewModels
                 var validador2 = new StockSuficienteValidator(_ordenRepository);
 
                 validador1.SetNext(validador2);
-
                 validador1.Validate(Platillos);
 
                 if (!_ordenRepository.GenerarVenta(Platillos, IdOrden, propina))

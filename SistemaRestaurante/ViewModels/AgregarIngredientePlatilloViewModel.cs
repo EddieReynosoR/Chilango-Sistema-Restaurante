@@ -58,7 +58,7 @@ namespace SistemaRestaurante.ViewModels
 
         public AgregarIngredientePlatilloViewModel(List<Producto>? productos = null)
         {
-            _productoRepository = new ProductoRepository(new RestauranteDbContext());
+            _productoRepository = new ProductoRepository(new SoftwareRestauranteContext());
             CargarProductos(productos);
         }
 

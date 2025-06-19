@@ -72,7 +72,8 @@ namespace SistemaRestaurante.Views.Dialogs
             {
                 Nombre = tbxNombre.Text,
                 Precio = precio,
-                Area = area.ToString()
+                Area = area.ToString(),
+                Estatus = true
             });
 
             if (exito)

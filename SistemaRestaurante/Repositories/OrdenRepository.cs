@@ -8,9 +8,9 @@ namespace SistemaRestaurante.Repositories
 {
     internal class OrdenRepository
     {
-        private readonly RestauranteDbContext _context;
+        private readonly SoftwareRestauranteContext _context;
 
-        public OrdenRepository(RestauranteDbContext context)
+        public OrdenRepository(SoftwareRestauranteContext context)
         {
             _context = context;
         }
@@ -20,6 +20,12 @@ namespace SistemaRestaurante.Repositories
         public bool AgregarOrden(Orden orden)
         {
             _context.Ordens.Add(orden);
+            return _context.SaveChanges() > 0;
+        }
+
+        public bool GuardarCambiosOrden(Orden orden)
+        {
+            _context.Entry(orden).State = EntityState.Modified;
             return _context.SaveChanges() > 0;
         }
 
@@ -70,7 +76,8 @@ namespace SistemaRestaurante.Repositories
                     {
                         PlatilloId = platillo.Platillo.IdPlatillo,
                         OrdenId = idOrden,
-                        Cantidad = platillo.Cantidad
+                        Cantidad = platillo.Cantidad,
+                        Estatus = true
                     });
                 }
 
@@ -138,7 +145,7 @@ namespace SistemaRestaurante.Repositories
                 {
                     var productoExistente = _context.Productos.FirstOrDefault(p => p.IdProducto == producto.ProductoId);
 
-                    if (productoExistente == null || productoExistente.StockActual < producto.CantidadNecesaria * platilloSeleccionado.Cantidad)
+                    if (productoExistente == null || productoExistente.StockActual <= (producto.CantidadNecesaria * platilloSeleccionado.Cantidad))
                         return false;
                 }
             }
@@ -162,6 +169,10 @@ namespace SistemaRestaurante.Repositories
 
                 if (mesa == null)
                     return false;
+
+                App.MesasViewModel.Mesas.FirstOrDefault(m => m.IdMesa == idMesa).Mesa.Ocupada = false;
+                App.MesasViewModel.Mesas.FirstOrDefault(m => m.IdMesa == idMesa).TiempoOrden = null;
+                App.TemporizadorOrdenes.RemoverOrden(idOrden);
 
                 foreach (var platilloSeleccionado in platillos)
                 {
@@ -219,7 +230,8 @@ namespace SistemaRestaurante.Repositories
                     PropinaMesero = propinaMesero,
                     PropinaCocina = propinaCocina,
                     PropinaBebidas = propinaBebidas,
-                    FechaVenta = DateTime.Now
+                    FechaVenta = DateTime.Now,
+                    Estatus = true
                 };
 
                 _context.Venta.Add(venta);

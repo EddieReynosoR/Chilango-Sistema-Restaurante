@@ -5,9 +5,9 @@ namespace SistemaRestaurante.Repositories
 {
     class VentasRepository
     {
-        private readonly RestauranteDbContext _context;
+        private readonly SoftwareRestauranteContext _context;
 
-        public VentasRepository(RestauranteDbContext context)
+        public VentasRepository(SoftwareRestauranteContext context)
         {
             _context = context;
         }
@@ -28,6 +28,11 @@ namespace SistemaRestaurante.Repositories
             _context.Entry(ventum).State = EntityState.Modified;
 
             return _context.SaveChanges() > 0;
+        }
+
+        public List<Ventum> ObtenerCantidadVentasTardias(DateTime fecha)
+        {
+            return [.. _context.Venta.Include(v => v.IdOrdenNavigation).Where(v => v.Estatus && v.IdOrdenNavigation.EsTardio && v.FechaVenta.Date == fecha.Date)];
         }
     }
 }

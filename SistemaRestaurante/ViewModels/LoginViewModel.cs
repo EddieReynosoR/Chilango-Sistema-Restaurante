@@ -30,7 +30,7 @@ namespace SistemaRestaurante.ViewModels
 
         public LoginViewModel()
         {
-            _usuarioRepository = new UsuarioRepository(new RestauranteDbContext());
+            _usuarioRepository = new UsuarioRepository(new SoftwareRestauranteContext());
         }
 
         public bool UsuarioLogin()

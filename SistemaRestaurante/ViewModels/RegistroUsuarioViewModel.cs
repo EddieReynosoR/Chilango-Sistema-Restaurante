@@ -51,7 +51,7 @@ namespace SistemaRestaurante.ViewModels
 
         public RegistroUsuarioViewModel()
         {
-            _usuarioRepository = new UsuarioRepository(new RestauranteDbContext());
+            _usuarioRepository = new UsuarioRepository(new SoftwareRestauranteContext());
             ConsultarRoles();
         }
 

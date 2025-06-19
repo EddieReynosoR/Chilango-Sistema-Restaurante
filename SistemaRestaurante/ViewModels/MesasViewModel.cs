@@ -1,15 +1,18 @@
 ﻿using SistemaRestaurante.Models;
 using SistemaRestaurante.Utilities.Facade;
+using SistemaRestaurante.Utilities.Observer;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace SistemaRestaurante.ViewModels
 {
-    internal class MesasViewModel : ViewModelBase
+    internal class MesasViewModel : ViewModelBase, IObservadorOrden
     {
-        private ObservableCollection<Mesa> _mesas;
+        private Dictionary<int, TimeSpan> _duracionOrdenes = [];
 
-        public ObservableCollection<Mesa> Mesas
+        private ObservableCollection<MesaWrapper> _mesas;
+        public ObservableCollection<MesaWrapper> Mesas
         {
             get => _mesas;
             set
@@ -27,27 +30,30 @@ namespace SistemaRestaurante.ViewModels
 
         private readonly RestauranteFacade _restauranteFacade;
 
-        public MesasViewModel()
+        public MesasViewModel(TemporizadorOrdenes temporizador)
         {
-            _restauranteFacade = new RestauranteFacade(new RestauranteDbContext());
+            _restauranteFacade = new RestauranteFacade(new SoftwareRestauranteContext());
             CargarMesas();
+
+            temporizador.RegistrarObservador(this);
         }
 
         public async void CargarMesas()
         {
-            Mesas = [.. await Task.Run(_restauranteFacade.ObtenerMesas)];
+            var mesas = await Task.Run(_restauranteFacade.ObtenerMesas);
+            Mesas = [.. mesas.Select(m => new MesaWrapper(m))];
             CantidadMesas = Mesas.Count;
         }
 
         public Orden? ExisteOrden(int idMesa) => _restauranteFacade.ExisteOrden(idMesa);
 
-        public Orden? ActivarMesa(Mesa mesa)
+        public Orden? ActivarMesa(MesaWrapper mesa)
         {
             Orden? orden;
 
             try
             {
-                orden = _restauranteFacade.AbrirOrdenParaMesa(mesa);
+                orden = _restauranteFacade.AbrirOrdenParaMesa(mesa.Mesa);
 
                 if (orden == null)
                 {
@@ -55,6 +61,8 @@ namespace SistemaRestaurante.ViewModels
                     return null;
                 }
 
+                mesa.OrdenActiva = orden;
+                App.TemporizadorOrdenes?.AgregarOrden(orden);
                 MessageBox.Show("Orden creada correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception e)
@@ -67,7 +75,7 @@ namespace SistemaRestaurante.ViewModels
         }
 
         public bool EliminarMesa(Mesa mesa)
-        {
+        { 
             try
             {
                 var result = MessageBox.Show($"¿Estás seguro de eliminar la mesa #'{mesa.Numero}'?",
@@ -81,13 +89,12 @@ namespace SistemaRestaurante.ViewModels
                     MessageBox.Show("Ocurrió un error al eliminar la mesa.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
                 }
-
+                
                 MessageBox.Show("Mesa eliminada exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Ocurrió un error al eliminar la mesa. {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
                 return false;
             }
 
@@ -115,6 +122,45 @@ namespace SistemaRestaurante.ViewModels
             }
 
             return true;
+        }
+
+        public void NotificarOrdenTardia(Orden orden, TimeSpan duracion)
+        {
+            MessageBox.Show($"Orden #{orden.IdOrden} superó los {duracion.TotalSeconds:F1} segundos.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public void ActualizarDuracionOrden(Orden orden, TimeSpan duracion)
+        {
+            _duracionOrdenes[orden.IdOrden] = duracion;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var wrapper = Mesas.FirstOrDefault(m => m.OrdenActiva?.IdOrden == orden.IdOrden);
+                if (wrapper != null)
+                {
+                    wrapper.TiempoOrden = $"{(int)duracion.TotalMinutes:D2}:{duracion.Seconds:D2}";
+                }
+
+                CollectionViewSource.GetDefaultView(Mesas)?.Refresh();
+            });
+        }
+    }
+
+    public class MesaWrapper
+    {
+        public Mesa Mesa { get; set; }
+
+        public string? TiempoOrden { get; set; }
+
+        public bool Ocupada => Mesa.Ocupada;
+        public int IdMesa => Mesa.IdMesa;
+        public int Numero => Mesa.Numero;
+
+        public Orden? OrdenActiva { get; set; }
+
+        public MesaWrapper(Mesa mesa)
+        {
+            Mesa = mesa;
         }
     }
 }

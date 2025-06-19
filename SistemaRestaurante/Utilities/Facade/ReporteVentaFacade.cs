@@ -4,12 +4,16 @@ using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
+using Microsoft.Extensions.Configuration;
 using SistemaRestaurante.Models;
 using SistemaRestaurante.Repositories;
 using SistemaRestaurante.Utilities.ReporteVentaProxy;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Mail;
+using System.Net;
 using System.Windows;
+using System.Text.RegularExpressions;
 
 namespace SistemaRestaurante.Utilities.Facade
 {
@@ -18,7 +22,7 @@ namespace SistemaRestaurante.Utilities.Facade
         private readonly VentasRepository _ventasRepository;
         private readonly ProductoRepository _productoRepository;
 
-        public ReporteVentaFacade(RestauranteDbContext context)
+        public ReporteVentaFacade(SoftwareRestauranteContext context)
         {
             _ventasRepository = new VentasRepository(context);
             _productoRepository = new ProductoRepository(context);
@@ -36,7 +40,7 @@ namespace SistemaRestaurante.Utilities.Facade
             return _ventasRepository.EliminarVenta(venta);
         }
 
-        public bool GenerarReporteCorteCaja(List<Ventum> ventas, List<(Producto Producto, int CantidadFaltante)> productos, DateTime fecha)
+        public bool GenerarReporteCorteCaja(List<Ventum> ventas, List<(Producto Producto, int CantidadFaltante)> productos, DateTime fecha, string correo)
         {
             try
             {
@@ -117,6 +121,31 @@ namespace SistemaRestaurante.Utilities.Facade
                     }
                     #endregion
 
+                    #region Ventas Tardías
+                    var ventasTardias = _ventasRepository.ObtenerCantidadVentasTardias(fecha);
+
+                    if (ventasTardias.Count > 0)
+                    {
+                        document.Add(new Paragraph("Cantidad de Ordenes/Ventas tardías")
+                        .SetFont(fontBold)
+                        .SetFontSize(16)
+                        .SetTextAlignment(iText.Layout.Properties.TextAlignment.LEFT)
+                        .SetMarginTop(20));
+
+                        Table ventasTardiasTable = new Table(2).UseAllAvailableWidth();
+                        ventasTardiasTable.AddHeaderCell(new Cell().Add(new Paragraph("Cantidad Ordenes").SetFont(fontBold)));
+                        ventasTardiasTable.AddHeaderCell(new Cell().Add(new Paragraph("Tiempo Tardío").SetFont(fontBold)));
+
+
+
+                        ventasTardiasTable.AddCell(ventasTardias.Count.ToString());
+                        var minutosTardios = ventasTardias.Sum(v => v.IdOrdenNavigation.SegundosTardio) / 60.0;
+                        ventasTardiasTable.AddCell(minutosTardios.ToString("0.00") + " minutos.");
+
+                        document.Add(ventasTardiasTable);
+                    }                 
+                    #endregion
+
                     #region Productos
                     if (productos.Count > 0)
                     {
@@ -141,9 +170,39 @@ namespace SistemaRestaurante.Utilities.Facade
                         document.Add(productosTable);
                     }
                     #endregion
+
+                    document.Close();
                 }
 
                 Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+
+                if (!string.IsNullOrWhiteSpace(correo) && EsCorreoValido(correo))
+                {
+                    var config = new ConfigurationBuilder()
+                        .AddJsonFile("appsettings.json")
+                        .Build();
+
+                    var settings = new EmailSettings();
+                    config.GetSection("EmailSettings").Bind(settings);
+
+                    var email = new EmailBuilder()
+                        .From(settings.From)
+                        .To(correo)
+                        .Subject("Reporte Corte de Caja")
+                        .Body("Adjunto encontrarás el reporte de corte de caja del día.")
+                        .Attach(filePath)
+                        .Build();
+
+                    using var smtp = new SmtpClient(settings.Host)
+                    {
+                        Port = settings.Port,
+                        Credentials = new NetworkCredential(settings.Username, settings.Password),
+                        EnableSsl = settings.EnableSsl
+                    };
+
+                    smtp.Send(email);
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -151,6 +210,15 @@ namespace SistemaRestaurante.Utilities.Facade
                 MessageBox.Show($"Error al generar el PDF: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        private bool EsCorreoValido(string correo)
+        {
+            if (string.IsNullOrWhiteSpace(correo))
+                return false;
+
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(correo, pattern, RegexOptions.IgnoreCase);
         }
     }
 }

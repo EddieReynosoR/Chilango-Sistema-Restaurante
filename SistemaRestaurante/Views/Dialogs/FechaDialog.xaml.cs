@@ -28,6 +28,8 @@ namespace SistemaRestaurante.Views.Dialogs
                 return;
             }
 
+            ViewModel.Correo = tbxCorreo.Text;
+
             if (ViewModel.GenerarFormatoCorteCaja(fecha))
             {
                 MessageBox.Show("Se ha generado el reporte de forma correcta.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);

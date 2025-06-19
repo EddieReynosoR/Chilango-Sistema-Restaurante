@@ -66,7 +66,7 @@ namespace SistemaRestaurante.ViewModels
 
         public AgregarEditarPlatilloViewModel(Platillo? platillo = null)
         {
-            _platilloRepository = new PlatilloRepository(new RestauranteDbContext());
+            _platilloRepository = new PlatilloRepository(new SoftwareRestauranteContext());
 
             if (platillo != null)
             {
